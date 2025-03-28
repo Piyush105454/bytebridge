@@ -4,44 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Registration</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
     <h2>Register for the Event</h2>
-    <form id="registrationForm">
+
+    {% if message %}
+        <p style="color: green;">{{ message }}</p>
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
         {% csrf_token %}
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="email" id="email" placeholder="Email" required>
+        {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>
-    <p id="message"></p>
+    {% if registration and registration.email %}
+    <form action="{% url 'check_in' registration.email %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Check In</button>
+    </form>
 
-    <script>
-        $("#registrationForm").submit(function(event) {
-            event.preventDefault();
-            let name = $("#name").val();
-            let email = $("#email").val();
-            let csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+    <form action="{% url 'check_out' registration.email %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Check Out</button>
+    </form>
+{% else %}
+    <p></p>
+{% endif %}
 
-            $.ajax({
-                type: "POST",
-                url: "/",
-                data: {
-                    'name': name,
-                    'email': email,
-                    'csrfmiddlewaretoken': csrfToken
-                },
-                success: function(response) {
-                    $("#message").text(response.message);
-                    $("#registrationForm")[0].reset();
-                },
-                error: function(xhr) {
-                    $("#message").text(xhr.responseJSON.message);
-                }
-            });
-        });
-    </script>
+    
 
 </body>
 </html>
