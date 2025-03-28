@@ -131,5 +131,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'piyushmodi812@gmail.com'
-EMAIL_HOST_PASSWORD = 'jlsm ovrt kdoa yoid'
-ALLOWED_HOSTS = ['https://bytebridge-kchb.onrender.com/']
+EMAIL_HOST_PASSWORD = 'dtti tgrv xckk ekph'
+ALLOWED_HOSTS = ['bytebridge-kchb.onrender.com']
