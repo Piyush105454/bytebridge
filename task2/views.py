@@ -31,6 +31,6 @@ def register(request):
                 return render(request, 'index.html', {'form': form, 'error': 'Email already registered!'})
 
             registration = form.save()  # Save the registration
-            return redirect('index')  # Redirect to avoid resubmission
+            return redirect('register')  # Redirect to avoid resubmission
 
     return render(request, 'index.html', {'form': form, 'registration': registration})
