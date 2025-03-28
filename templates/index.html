@@ -3,40 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Registration</title>
+    <title>Speaker Session Registration</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: white;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .nav-buttons button {
+            background-color: white;
+            color: #007bff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .nav-buttons button:hover {
+            background-color: #ddd;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .hero h1 {
+            font-size: 2rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        .hero button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .hero button:hover {
+            background-color: #218838;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 350px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        .close {
+            color: red;
+            font-size: 22px;
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+        }
+
+        /* Check-in & Check-out Section */
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
-    <h2>Register for the Event</h2>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h2>Speaker Session</h2>
+        <div class="nav-buttons">
+            <button onclick="openModal('registerModal')">Sign Up</button>
+            <button onclick="openModal('loginModal')">Login</button>
+        </div>
+    </div>
 
-    {% if message %}
-        <p style="color: green;">{{ message }}</p>
-    {% endif %}
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Finding the Correct Balance Between the Urge to Learn and the Urge to Earn</h1>
+        <p>Join our exclusive speaker session!</p>
+        <p><strong>Date:</strong> April 5, 2025 | <strong>Time:</strong> 5:00 PM - 7:00 PM</p>
+    </div>
 
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-
-    <form method="POST">
+    <!-- Registration Modal -->
+    <div id="registerModal" class="modal">
+        <span class="close" onclick="closeModal('registerModal')">&times;</span>
+        <h2>Register</h2>
+        <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>
-    {% if registration and registration.email %}
+          <p class="message" id="registerMessage"></p>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <span class="close" onclick="closeModal('loginModal')">&times;</span>
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+            <button id="login">login</button>
+        <p class="message" id="checkMessage"></p>
+    </div>
+
+    <!-- Check-in & Check-out Section -->
+    <div class="container">
+        <h2>Check-in / Check-out</h2>
+       {% if registration and registration.email %}
     <form action="{% url 'check_in' registration.email %}" method="POST">
         {% csrf_token %}
         <button type="submit">Check In</button>
     </form>
-
-    <form action="{% url 'check_out' registration.email %}" method="POST">
+    </div>
+     <div class="container">
+        <h2>Check-in / Check-out</h2>
+       {% if registration and registration.email %}
+        <form action="{% url 'check_out' registration.email %}" method="POST">
         {% csrf_token %}
         <button type="submit">Check Out</button>
     </form>
-{% else %}
-    <p></p>
-{% endif %}
+    </div>
 
-    
+    <script>
+    function openModal(id) {
+            document.getElementById(id).style.display = "block";
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+        
+    </script>
 
 </body>
 </html>
