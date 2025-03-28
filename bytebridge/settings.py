@@ -132,4 +132,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'piyushmodi812@gmail.com'
 EMAIL_HOST_PASSWORD = 'jlsm ovrt kdoa yoid'
-ALLOWED_HOSTS = ['https://bytebridge-delta.vercel.app/']
+ALLOWED_HOSTS = ['https://bytebridge-kchb.onrender.com/']
