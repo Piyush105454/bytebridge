@@ -5,6 +5,9 @@
       "src": "manage.py",
       "use": "@vercel/python"
     },
+    "routes": [
+    { "src": "/(.*)", "dest": "bytebridge/wsgi.py" }
+    ]
     {
       "src": "staticfiles/**",
       "use": "@vercel/static"
