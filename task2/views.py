@@ -19,6 +19,8 @@ def check_out(request, email):
     return JsonResponse({"message": "Checked out successfully!"})
 
 
+
+
 def register(request):
     form = RegistrationForm()
     registration = None  # Initialize as None to avoid errors
@@ -31,6 +33,16 @@ def register(request):
                 return render(request, 'index.html', {'form': form, 'error': 'Email already registered!'})
 
             registration = form.save()  # Save the registration
+
+            # Send confirmation email
+            send_mail(
+                'Registration Successful',
+                'Thank you for registering! Your registration has been successfully completed.',
+                'piyushmodi812@gmail.com',  # Replace with your sender email
+                [email],  # Recipient email from form
+                fail_silently=False,
+            )
+
             return redirect('register')  # Redirect to avoid resubmission
 
     return render(request, 'index.html', {'form': form, 'registration': registration})
