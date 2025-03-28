@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h2>Register for the Event</h2>
+    <form id="registrationForm">
+        {% csrf_token %}
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="submit">Submit</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        $("#registrationForm").submit(function(event) {
+            event.preventDefault();
+            let name = $("#name").val();
+            let email = $("#email").val();
+            let csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/",
+                data: {
+                    'name': name,
+                    'email': email,
+                    'csrfmiddlewaretoken': csrfToken
+                },
+                success: function(response) {
+                    $("#message").text(response.message);
+                    $("#registrationForm")[0].reset();
+                },
+                error: function(xhr) {
+                    $("#message").text(xhr.responseJSON.message);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
