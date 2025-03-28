@@ -1,43 +1,36 @@
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.utils.timezone import now, timedelta
 from .models import Registration
 from .forms import RegistrationForm
-import threading
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Registration
 
-# Function to send reminder email
-def send_reminder_email(email):
-    send_mail(
-        'Event Reminder',
-        'Reminder: Your event is starting in 30 minutes!',
-        'your_email@example.com',
-        [email],
-        fail_silently=False,
-    )
+def check_in(request, email):
+    registration = get_object_or_404(Registration, email=email)
+    registration.checked_in = True
+    registration.save()
+    return JsonResponse({"message": "Checked in successfully!"})
 
-# Registration View
+def check_out(request, email):
+    registration = get_object_or_404(Registration, email=email)
+    registration.checked_in = False
+    registration.save()
+    return JsonResponse({"message": "Checked out successfully!"})
+
+
 def register(request):
-    if request.method == "POST":
+    form = RegistrationForm()
+    registration = None  # Initialize as None to avoid errors
+
+    if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            registration = form.save()
+            email = form.cleaned_data['email']
+            if Registration.objects.filter(email=email).exists():
+                return render(request, 'index.html', {'form': form, 'error': 'Email already registered!'})
 
-            # Send confirmation email
-            send_mail(
-                'Registration Successful',
-                f'Thank you {registration.name}, you have successfully registered for the event!',
-                'your_email@example.com',
-                [registration.email],
-                fail_silently=False,
-            )
+            registration = form.save()  # Save the registration
+            return redirect('index')  # Redirect to avoid resubmission
 
-            # Schedule Reminder Email
-            reminder_time = now() + timedelta(minutes=30)
-            threading.Timer((reminder_time - now()).total_seconds(), send_reminder_email, [registration.email]).start()
-
-            return JsonResponse({'message': 'Registration Successful!'})
-        else:
-            return JsonResponse({'message': 'Invalid form data'}, status=400)
-
-    return render(request, 'index.html', {'form': RegistrationForm()})
+    return render(request, 'index.html', {'form': form, 'registration': registration})
