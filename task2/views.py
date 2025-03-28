@@ -29,20 +29,25 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
+            
             if Registration.objects.filter(email=email).exists():
                 return render(request, 'index.html', {'form': form, 'error': 'Email already registered!'})
 
             registration = form.save()  # Save the registration
+            
+            # Send email with error handling
+            try:
+                send_mail(
+                    'Registration Successful',
+                    'Thank you for registering! Your registration has been successfully completed.',
+                    'piyushmodi812@gmail.com',  # Sender email
+                    [email],  # Recipient email
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Email sending failed: {e}")
 
-            # Send confirmation email
-            send_mail(
-                'Registration Successful',
-                'Thank you for registering! Your registration has been successfully completed.',
-                'piyushmodi812@gmail.com',  # Replace with your sender email
-                [email],  # Recipient email from form
-                fail_silently=False,
-            )
-
-            return redirect('register')  # Redirect to avoid resubmission
+            form = RegistrationForm()  # Reset form after successful registration
+            return render(request, 'index.html', {'form': form, 'message': 'Registration successful! Check your email.'})
 
     return render(request, 'index.html', {'form': form, 'registration': registration})
