@@ -181,23 +181,25 @@
         <p class="message" id="checkMessage"></p>
     </div>
 
-    <!-- Check-in & Check-out Section -->
     <div class="container">
-        <h2>Check-in / Check-out</h2>
-       {% if registration and registration.email %}
+    <h2>Check-in / Check-out</h2>
+    {% if registration and registration.email %}
     <form action="{% url 'check_in' registration.email %}" method="POST">
         {% csrf_token %}
         <button type="submit">Check In</button>
     </form>
-    </div>
-     <div class="container">
-        <h2>Check-in / Check-out</h2>
-       {% if registration and registration.email %}
-        <form action="{% url 'check_out' registration.email %}" method="POST">
+    {% endif %}
+</div>
+
+<div class="container">
+    <h2>Check-in / Check-out</h2>
+    {% if registration and registration.email %}
+    <form action="{% url 'check_out' registration.email %}" method="POST">
         {% csrf_token %}
         <button type="submit">Check Out</button>
     </form>
-    </div>
+    {% endif %}
+</div>
 
     <script>
     function openModal(id) {
