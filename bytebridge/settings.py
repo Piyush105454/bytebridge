@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'task2',
+    'corsheaders', 
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'piyushmodi812@gmail.com'
 EMAIL_HOST_PASSWORD = 'dtti tgrv xckk ekph'
 ALLOWED_HOSTS = ['bytebridge-kchb.onrender.com']
+
+LOGIN_REDIRECT_URL = 'login'  # Redirect after login (Change 'dashboard' to your actual view name)
+LOGOUT_REDIRECT_URL = 'register'  # Redirect to the register (home) page after logout
+
