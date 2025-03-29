@@ -1,59 +1,95 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
-from .models import Registration
-from .forms import RegistrationForm
-from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import Registration
+from .forms import RegistrationForm, LoginForm
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
-def check_in(request, email):
-    registration = get_object_or_404(Registration, email=email)
-    
-    if registration.checked_in:
-        return JsonResponse({"message": "You are already checked in!"}, status=400)
-    
-    registration.checked_in = True
-    registration.save()
-    return JsonResponse({"message": "Checked in successfully!"})
-
-def check_out(request, email):
-    registration = get_object_or_404(Registration, email=email)
-    
-    if not registration.checked_in:
-        return JsonResponse({"message": "You are not checked in yet!"}, status=400)
-    
-    registration.checked_in = False
-    registration.save()
-    return JsonResponse({"message": "Checked out successfully!"})
-
+def user_logout(request):
+    request.session.flush()   # Logs out the user
+    return redirect('register')  # Redirects to the home page (register page)
 
 def register(request):
     form = RegistrationForm()
-    registration = None  # Initialize as None to avoid errors
-
+    
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
+            password = make_password(form.cleaned_data['password'])  # Hash password
             
             if Registration.objects.filter(email=email).exists():
                 return render(request, 'index.html', {'form': form, 'error': 'Email already registered!'})
 
-            registration = form.save()  # Save the registration
-            
-            # Send email with error handling
+            registration = form.save(commit=False)
+            registration.password = password
+            registration.save()
+
+            # Send confirmation email
             try:
                 send_mail(
                     'Registration Successful',
-                    'Thank you for registering! Your registration has been successfully completed.',
-                    'piyushmodi812@gmail.com',  # Sender email
-                    [email],  # Recipient email
+                    'You have successfully registered for the event.',
+                    'your_email@example.com',
+                    [email],
                     fail_silently=False,
                 )
             except Exception as e:
                 print(f"Email sending failed: {e}")
 
-            form = RegistrationForm()  # Reset form after successful registration
-            return render(request, 'index.html', {'form': form, 'message': 'Registration successful! Check your email.'})
+            return redirect('login')  # Redirect to login page after registration
 
-    return render(request, 'index.html', {'form': form, 'registration': registration})
+    return render(request, 'index.html', {'form': form})
+def login_view(request):
+    form = LoginForm()
+    
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            user = Registration.objects.filter(email=email).first()
+            if user and check_password(password, user.password):
+                request.session['user_email'] = email  # Store session for authentication
+                return redirect('register')  # Redirect to home page after login
+
+            return render(request, 'index.html', {'form': form, 'error': 'Invalid credentials!'})
+
+    return render(request, 'index.html', {'form': form})
+
+
+@csrf_exempt
+def check_in(request, email):
+    if request.method == "POST":
+        try:
+            user = Registration.objects.get(email=email)
+            if not user.checked_in:
+                user.checked_in = True
+                user.save()
+                return render(request, 'index.html', {'message': "Check-in successful!", 'user': user})
+            else:
+                return render(request, 'index.html', {'message': "Already checked in!", 'user': user})
+        except Registration.DoesNotExist:
+            return render(request, 'index.html', {'message': "User not found!"})
+
+    return redirect('register')  # Redirect if accessed via GET
+
+@csrf_exempt
+def check_out(request, email):
+    if request.method == "POST":
+        try:
+            user = Registration.objects.get(email=email)
+            if user.checked_in:
+                user.checked_in = False
+                user.save()
+                return render(request, 'index.html', {'message': "Check-out successful!", 'user': user})
+            else:
+                return render(request, 'index.html', {'message': "Already checked out!", 'user': user})
+        except Registration.DoesNotExist:
+            return render(request, 'index.html', {'message': "User not found!"})
+
+    return redirect('register')  # Redirect if accessed via GET
