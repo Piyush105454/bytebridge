@@ -7,7 +7,7 @@ Here's a structured README.md file for your registration and RSVP website, follo
 
 🌍 Live Website
 
-[btyebridge - Live Now](https://bytebridge-kchb.onrender.com/)
+[bytebridge - Live Now](https://bytebridge-kchb.onrender.com/)
 
 📌 About Event RSVP
 
