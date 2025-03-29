@@ -202,6 +202,48 @@
 </div>
 
     <script>
+        
+    function handleCheckIn(email) {
+        fetch(`/check-in/${email}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCsrfToken(), // CSRF token for security
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.message.includes("successfully")) {
+                document.getElementById("checkInBtn").disabled = true;
+                document.getElementById("checkOutBtn").disabled = false;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+
+    function handleCheckOut(email) {
+        fetch(`/check-out/${email}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCsrfToken(),
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.message.includes("successfully")) {
+                document.getElementById("checkInBtn").disabled = false;
+                document.getElementById("checkOutBtn").disabled = true;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+
+    function getCsrfToken() {
+        return document.querySelector("[name=csrfmiddlewaretoken]").value;
+    }
     function openModal(id) {
             document.getElementById(id).style.display = "block";
         }
