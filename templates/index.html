@@ -184,22 +184,11 @@
     <div class="container">
     <h2>Check-in / Check-out</h2>
     {% if registration and registration.email %}
-    <form action="{% url 'check_in' registration.email %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Check In</button>
-    </form>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <button id="checkInBtn" onclick="handleCheckIn('{{ registration.email }}')" {% if registration.checked_in %}disabled{% endif %}>Check In</button>
+        <button id="checkOutBtn" onclick="handleCheckOut('{{ registration.email }}')" {% if not registration.checked_in %}disabled{% endif %}>Check Out</button>
     {% endif %}
-</div>
-
-<div class="container">
-    <h2>Check-in / Check-out</h2>
-    {% if registration and registration.email %}
-    <form action="{% url 'check_out' registration.email %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Check Out</button>
-    </form>
-    {% endif %}
-</div>
+    </div>
 
     <script>
         
