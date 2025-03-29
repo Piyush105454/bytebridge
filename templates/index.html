@@ -21,7 +21,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
+            padding: 10px 30px;
             background-color: #007bff;
             color: white;
         }
@@ -43,17 +43,27 @@
 
         /* Hero Section */
         .hero {
-            background-color: #007bff;
-            color: white;
+            background-image: url("https://i.ibb.co/twsFJQsv/4.webp") ;
+            background-size: cover; /* Ensures it covers the entire screen */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents repeating */
+            background-attachment: fixed; 
+            color: rgb(238, 177, 11);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
             text-align: center;
             padding: 60px 20px;
         }
+        
         .hero h1 {
-            font-size: 2rem;
+             font-size: 2rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+   
         }
         .hero p {
             font-size: 1.2rem;
             margin-top: 10px;
+            text-shadow: 1px 1px 3px black;
         }
         .hero button {
             background-color: #28a745;
@@ -67,6 +77,36 @@
         }
         .hero button:hover {
             background-color: #218838;
+        }
+          /* Speaker Section */
+          .speaker {
+            width: 80%;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border: 2px solid #ff6b6b;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .speaker img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid #ff6b6b;
+        }
+
+        .speaker h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .speaker p {
+            font-size: 16px;
+            color: #555;
         }
 
         /* Modal Styles */
@@ -148,10 +188,16 @@
     <div class="navbar">
         <h2>Speaker Session</h2>
         <div class="nav-buttons">
-            <button onclick="openModal('registerModal')">Sign Up</button>
-            <button onclick="openModal('loginModal')">Login</button>
+            {% if request.session.user_email %}
+                <button onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+            {% else %}
+                <button onclick="openModal('registerModal')">Sign Up</button>
+                <button onclick="openModal('loginModal')">Login</button>
+            {% endif %}
         </div>
     </div>
+    
+    
 
     <!-- Hero Section -->
     <div class="hero">
@@ -159,6 +205,12 @@
         <p>Join our exclusive speaker session!</p>
         <p><strong>Date:</strong> April 5, 2025 | <strong>Time:</strong> 5:00 PM - 7:00 PM</p>
     </div>
+    <section class="speaker">
+        <a href="https://imgbb.com/"><img src="https://i.ibb.co/JjyTjTnr/2020052811402003.jpg" alt="2020052811402003" border="0"></a>
+        <h2>Dr. Ramesh Gupta</h2>
+        <p>Renowned Educator & Entrepreneur</p>
+        <p>With over 20 years of experience in education and business, Dr. Ramesh Gupta will share insights on how to balance learning with financial growth, ensuring success in both career and life.</p>
+    </section>
 
     <!-- Registration Modal -->
     <div id="registerModal" class="modal">
@@ -176,71 +228,53 @@
     <div id="loginModal" class="modal">
         <span class="close" onclick="closeModal('loginModal')">&times;</span>
         <h2>Login</h2>
-        <input type="email" id="loginEmail" placeholder="Enter your email" required>
-            <button id="login">login</button>
-        <p class="message" id="checkMessage"></p>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p class="message">{% if error %}{{ error }}{% endif %}</p>
     </div>
+    
 
+    
     <div class="container">
-    <h2>Check-in / Check-out</h2>
-    {% if registration and registration.email %}
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <button id="checkInBtn" onclick="handleCheckIn('{{ registration.email }}')" {% if registration.checked_in %}disabled{% endif %}>Check In</button>
-        <button id="checkOutBtn" onclick="handleCheckOut('{{ registration.email }}')" {% if not registration.checked_in %}disabled{% endif %}>Check Out</button>
-    {% endif %}
+        <h2>Check-in / Check-out</h2>
+
+        {% if request.session.user_email %}
+            <p><strong>Welcome:</strong> {{ request.session.user_email }}</p>
+            
+            <form action="{% url 'check_in' request.session.user_email %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" {% if user.checked_in %}disabled{% endif %}>Check In</button>
+            </form>
+
+            <form action="{% url 'check_out' request.session.user_email %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" {% if not user.checked_in %}disabled{% endif %}>Check Out</button>
+            </form>
+
+        {% else %}
+            <p>Please log in to check-in or check-out.</p>
+        {% endif %}
+
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
     </div>
 
     <script>
-        
-    function handleCheckIn(email) {
-        fetch(`/check-in/${email}/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCsrfToken(), // CSRF token for security
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            if (data.message.includes("successfully")) {
-                document.getElementById("checkInBtn").disabled = true;
-                document.getElementById("checkOutBtn").disabled = false;
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    }
 
-    function handleCheckOut(email) {
-        fetch(`/check-out/${email}/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCsrfToken(),
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            if (data.message.includes("successfully")) {
-                document.getElementById("checkInBtn").disabled = false;
-                document.getElementById("checkOutBtn").disabled = true;
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    }
-
-    function getCsrfToken() {
-        return document.querySelector("[name=csrfmiddlewaretoken]").value;
-    }
-    function openModal(id) {
+function openModal(id) {
             document.getElementById(id).style.display = "block";
         }
         function closeModal(id) {
             document.getElementById(id).style.display = "none";
         }
         
-    </script>
+
+   </script>
 
 </body>
 </html>
