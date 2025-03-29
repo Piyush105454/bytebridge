@@ -8,6 +8,15 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 """
 
 import os
+import django
+from django.contrib.auth import get_user_model
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project.settings')
+django.setup()
+
+User = get_user_model()
+if not User.objects.filter(username="piyush").exists():
+    User.objects.create_superuser("piyush", "piyushmodi812@gmail.com", "Code@1")
 
 from django.core.wsgi import get_wsgi_application
 
