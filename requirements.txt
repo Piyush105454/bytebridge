@@ -8,7 +8,10 @@ mysqlclient>=2.2
 PyMySQL>=1.1
 sqlparse>=0.5
 tzdata>=2024.2
+
 # Web server & static file management
 whitenoise>=6.8
 gunicorn>=23.0
 
+# CORS Headers Support
+django-cors-headers>=4.3  # Add latest version of django-cors-headers
