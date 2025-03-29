@@ -8,17 +8,23 @@ from .models import Registration
 
 def check_in(request, email):
     registration = get_object_or_404(Registration, email=email)
+    
+    if registration.checked_in:
+        return JsonResponse({"message": "You are already checked in!"}, status=400)
+    
     registration.checked_in = True
     registration.save()
     return JsonResponse({"message": "Checked in successfully!"})
 
 def check_out(request, email):
     registration = get_object_or_404(Registration, email=email)
+    
+    if not registration.checked_in:
+        return JsonResponse({"message": "You are not checked in yet!"}, status=400)
+    
     registration.checked_in = False
     registration.save()
     return JsonResponse({"message": "Checked out successfully!"})
-
-
 
 
 def register(request):
