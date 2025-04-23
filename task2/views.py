@@ -1,95 +1,90 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib import messages
+from .forms import CitizenSignupForm, AdminSignupForm
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Registration
-from .forms import RegistrationForm, LoginForm
-from django.contrib.auth import logout
-from django.shortcuts import redirect
+from django.conf import settings
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpResponse
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
+from .models import UserLoginAttempt  # Import the model for saving login attempts (defined below)
 
-def user_logout(request):
-    request.session.flush()   # Logs out the user
-    return redirect('register')  # Redirects to the home page (register page)
+User = get_user_model()
 
-def register(request):
-    form = RegistrationForm()
-    
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.email_verified = True
+        user.save()
+        return HttpResponse("✅ Email verified successfully! You can now log in.")
+    else:
+        return HttpResponse("❌ Verification link is invalid or expired.")
+
+
+def Signup(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = make_password(form.cleaned_data['password'])  # Hash password
-            
-            if Registration.objects.filter(email=email).exists():
-                return render(request, 'index.html', {'form': form, 'error': 'Email already registered!'})
+        role = request.POST.get('role')
+        if role == 'citizen':
+            form = CitizenSignupForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                return redirect('login')  # Redirect to login page after successful signup
+        elif role == 'admin':
+            form = AdminSignupForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                return redirect('login')  # Redirect to login page after successful signup
+    else:
+        # Display the Citizen form initially (or both if you want to allow a choice)
+        form = CitizenSignupForm()
 
-            registration = form.save(commit=False)
-            registration.password = password
-            registration.save()
+    return render(request, 'Signup.html', {'form': form})
 
-            # Send confirmation email
-            try:
-                send_mail(
-                    'Registration Successful',
-                    'You have successfully registered for the event.',
-                    'your_email@example.com',
-                    [email],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                print(f"Email sending failed: {e}")
 
-            return redirect('login')  # Redirect to login page after registration
-
-    return render(request, 'index.html', {'form': form})
 def login_view(request):
-    form = LoginForm()
-    
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            
-            user = Registration.objects.filter(email=email).first()
-            if user and check_password(password, user.password):
-                request.session['user_email'] = email  # Store session for authentication
-                return redirect('register')  # Redirect to home page after login
 
-            return render(request, 'index.html', {'form': form, 'error': 'Invalid credentials!'})
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                
+                # Log the login attempt
+                UserLoginAttempt.objects.create(user=user, successful=True)
+                
+                messages.success(request, "Login successful!")
+                return redirect('homepage')  # Redirect to the homepage
 
-    return render(request, 'index.html', {'form': form})
-
-
-@csrf_exempt
-def check_in(request, email):
-    if request.method == "POST":
-        try:
-            user = Registration.objects.get(email=email)
-            if not user.checked_in:
-                user.checked_in = True
-                user.save()
-                return render(request, 'index.html', {'message': "Check-in successful!", 'user': user})
             else:
-                return render(request, 'index.html', {'message': "Already checked in!", 'user': user})
-        except Registration.DoesNotExist:
-            return render(request, 'index.html', {'message': "User not found!"})
+                # If authentication failed, log the failed attempt
+                user = User.objects.filter(username=username).first()
+                if user:
+                    UserLoginAttempt.objects.create(user=user, successful=False)
 
-    return redirect('register')  # Redirect if accessed via GET
+                messages.error(request, "Invalid username or password!")
 
-@csrf_exempt
-def check_out(request, email):
-    if request.method == "POST":
-        try:
-            user = Registration.objects.get(email=email)
-            if user.checked_in:
-                user.checked_in = False
-                user.save()
-                return render(request, 'index.html', {'message': "Check-out successful!", 'user': user})
-            else:
-                return render(request, 'index.html', {'message': "Already checked out!", 'user': user})
-        except Registration.DoesNotExist:
-            return render(request, 'index.html', {'message': "User not found!"})
+    else:
+        form = LoginForm()
 
-    return redirect('register')  # Redirect if accessed via GET
+    return render(request, 'login.html', {'form': form})
+
+def Homepage(request):
+    return render(request, 'index.html')
+
+def Report(request):
+    return render(request, 'Report.html')
