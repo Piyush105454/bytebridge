@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Issue Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  h1, h2 {
+    color: #333;
+  }
+  
+  form input, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .featured {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 10px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+  
+  .issue {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .feature-btn {
+    background-color: #28a745;
+    margin-top: 6px;
+  }
+  
+  .output {
+    background: #e2e3e5;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+  }
+</style>
+<body>
+  <div class="container">
+    <h1>🚨 Report Issue</h1>
+
+    <form id="issueForm">
+        <h2>Issue title </h2>
+        
+        <label> Name</label>
+        <input type="text" placeholder="name" required>
+
+        <label> Email</label>
+        <input type="text" placeholder="email" required>
+        
+        <label> phone no</label>
+        <input type="number" placeholder="no." required> 
+
+        <label> Address</label>
+        <input type="text" placeholder="name" required>
+        <label> pincode</label>
+        <input type="number" placeholder="pin" required> 
+
+        <input type="text" id="title" placeholder="Issue Title" required />
+        <textarea id="description" placeholder="Issue Description" required></textarea>
+  
+        <label> issue duration</label>
+        <input type="text" id="title" placeholder="how long the issue has been " required />
+      
+<label> what actions you expect</label>
+        <input type="text" id="expect" placeholder="expect" required />
+      
+
+    <div class="issueImg">
+      <label>upload image of the issue</label>
+     <img src="" alt="img"/>
+    </div>
+    <div class="sign">
+<label>upload signature</label>
+     <img src="" alt="img"/>
+           </div>
+
+      <label> Report To:</label>
+      <select name="reportTo" id="Programs:" required > 
+        <option value="PWD">muncipal corporation</option>
+        <option value="muncipal corporation">muncipal corporation</option>
+       
+    </select>
+      <button type="submit">Add Issue</button>
+    </form>
+
+    <div class="featured">
+      <h2>⭐ Featured Issue</h2>
+      <div id="featuredIssue">No featured issue selected.</div>
+    </div>
+
+    <h2>📋 All Issues</h2>
+    <ul id="issueList"></ul>
+
+    <button id="generateBtn">Generate report </button>
+    <div class="output" id="output"></div>
+  </div>
+
+  <script src="script.js">
+    const issueForm = document.getElementById("issueForm");
+const issueList = document.getElementById("issueList");
+const featuredIssue = document.getElementById("featuredIssue");
+const generateBtn = document.getElementById("generateBtn");
+const output = document.getElementById("output");
+
+let issues = [];
+
+issueForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const reportTo = document.getElementById("reportTo").value.trim();
+
+  if (title && description && reportTo) {
+    const issue = {
+      id: Date.now(),
+      title,
+      description,
+      reportTo
+    };
+    issues.push(issue);
+    displayIssues();
+    issueForm.reset();
+  }
+});
+
+function displayIssues() {
+  issueList.innerHTML = "";
+  issues.forEach(issue => {
+    const li = document.createElement("li");
+    li.className = "issue";
+    li.innerHTML = `
+      <div><strong>${issue.title}</strong></div>
+      <div>${issue.description}</div>
+      <div><em>Report To:</em> ${issue.reportTo}</div>
+      <button class="feature-btn" onclick="featureIssue(${issue.id})">Feature</button>
+    `;
+    issueList.appendChild(li);
+  });
+}
+
+function featureIssue(id) {
+  const issue = issues.find(i => i.id === id);
+  if (issue) {
+    featuredIssue.innerHTML = `
+      <strong>${issue.title}</strong><br>
+      ${issue.description}<br>
+      <em>Report To:</em> ${issue.reportTo}
+    `;
+  }
+}
+
+generateBtn.addEventListener("click", () => {
+  if (issues.length === 0) {
+    output.textContent = "No issues to generate.";
+    return;
+  }
+
+  let report = "📄 Issue Summary Report\n\n";
+  issues.forEach((issue, index) => {
+    report += Issue ${index + 1}:\n;
+    report += Title: ${issue.title}\n;
+    report += Description: ${issue.description}\n;
+    report += Report To: ${issue.reportTo}\n\n;
+  });
+
+  output.textContent = report;
+});
+  </script>
+</body>
+</html>
