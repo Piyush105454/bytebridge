@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signup - Citizen & Admin</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .tab-buttons button {
+      width: 48%;
+      padding: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #ddd;
+      transition: 0.3s;
+    }
+
+    .tab-buttons button.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    .form input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .form button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="tab-buttons">
+    <button id="citizenTab" class="active" onclick="showForm('citizen')">Citizen</button>
+    <button id="adminTab" onclick="showForm('admin')">Admin</button>
+  </div>
+
+  <!-- Citizen Form -->
+  <form method="POST" id="citizenForm" class="form active">
+    {% csrf_token %}
+    <input type="hidden" name="role" value="citizen">
+    <input type="text" name="username" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="digilocker_number" placeholder="Digilocker Number" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Register as Citizen</button>
+  </form>
+
+  <!-- Admin Form -->
+  <form method="POST" id="adminForm" class="form">
+    {% csrf_token %}
+    <input type="hidden" name="role" value="admin">
+    <input type="text" name="username" placeholder="Admin Name" required>
+    <input type="email" name="email" placeholder="Admin Email" required>
+    <input type="text" name="admin_id" placeholder="Admin ID" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Register as Admin</button>
+  </form>
+</div>
+
+<script>
+  function showForm(role) {
+    document.getElementById('citizenForm').classList.remove('active');
+    document.getElementById('adminForm').classList.remove('active');
+    document.getElementById('citizenTab').classList.remove('active');
+    document.getElementById('adminTab').classList.remove('active');
+
+    if (role === 'citizen') {
+      document.getElementById('citizenForm').classList.add('active');
+      document.getElementById('citizenTab').classList.add('active');
+    } else {
+      document.getElementById('adminForm').classList.add('active');
+      document.getElementById('adminTab').classList.add('active');
+    }
+  }
+</script>
+
+</body>
+</html>
