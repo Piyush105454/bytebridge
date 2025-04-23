@@ -145,4 +145,4 @@ LOGIN_REDIRECT_URL = 'login'  # Redirect after login (Change 'dashboard' to your
 LOGOUT_REDIRECT_URL = 'register'  # Redirect to the register (home) page after logout
 
 AUTH_USER_MODEL = 'task2.CustomUser'
-
+LOGIN_REDIRECT_URL = '/'
