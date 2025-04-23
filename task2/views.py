@@ -88,3 +88,10 @@ def Homepage(request):
 
 def Report(request):
     return render(request, 'Report.html')
+
+from django.contrib.auth import logout
+
+def logout_view(request):
+    logout(request)
+    request.session.flush()  # Optional: extra cleanup
+    return redirect('homepage')
