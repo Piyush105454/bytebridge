@@ -144,3 +144,5 @@ ALLOWED_HOSTS = ['bytebridge-kchb.onrender.com']
 LOGIN_REDIRECT_URL = 'login'  # Redirect after login (Change 'dashboard' to your actual view name)
 LOGOUT_REDIRECT_URL = 'register'  # Redirect to the register (home) page after logout
 
+AUTH_USER_MODEL = 'task2.CustomUser'
+
