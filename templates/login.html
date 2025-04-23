@@ -52,11 +52,9 @@
 </head>
 <body>
 
-  <form method="POST">
+  <form method="POST" action="{% url 'login' %}">
     {% csrf_token %}
-    <h2>Login</h2>
-    <input type="text" name="username" placeholder="Username" required />
-    <input type="password" name="password" placeholder="Password" required />
+    {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
 
