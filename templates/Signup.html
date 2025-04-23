@@ -103,7 +103,7 @@
   </form>
 
   <!-- Admin Form -->
-  <form method="POST" id="adminForm" class="form">
+  <form method="POST" id="adminForm" action="{% url 'Signup' %}" class="form">
     {% csrf_token %}
     <input type="hidden" name="role" value="admin">
     <input type="text" name="username" placeholder="Admin Name" required>
