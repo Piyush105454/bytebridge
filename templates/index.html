@@ -1,280 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speaker Session Registration</title>
-    <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 30px;
-            background-color: #007bff;
-            color: white;
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .nav-buttons button {
-            background-color: white;
-            color: #007bff;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .nav-buttons button:hover {
-            background-color: #ddd;
-        }
-
-        /* Hero Section */
-        .hero {
-            background-image: url("https://i.ibb.co/twsFJQsv/4.webp") ;
-            background-size: cover; /* Ensures it covers the entire screen */
-            background-position: center; /* Centers the image */
-            background-repeat: no-repeat; /* Prevents repeating */
-            background-attachment: fixed; 
-            color: rgb(238, 177, 11);
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
-        .hero h1 {
-             font-size: 2rem;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-   
-        }
-        .hero p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            text-shadow: 1px 1px 3px black;
-        }
-        .hero button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 25px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .hero button:hover {
-            background-color: #218838;
-        }
-          /* Speaker Section */
-          .speaker {
-            width: 80%;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background: white;
-            border: 2px solid #ff6b6b;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .speaker img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-            border: 3px solid #ff6b6b;
-        }
-
-        .speaker h2 {
-            font-size: 22px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .speaker p {
-            font-size: 16px;
-            color: #555;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            width: 350px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-        .modal input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .modal button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .modal button:hover {
-            background-color: #0056b3;
-        }
-        .close {
-            color: red;
-            font-size: 22px;
-            position: absolute;
-            right: 15px;
-            cursor: pointer;
-        }
-
-        /* Check-in & Check-out Section */
-        .container {
-            max-width: 500px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .message {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LokConnect  </title>
+  <link rel="stylesheet" href="homepg2.css" />
 </head>
+<style>
+  body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+.header {
+  background-color: #0f2537;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.report-btn {
+  background-color: #ff6f3c;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.main {
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 2rem;
+}
+
+.issue-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.issue {
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  min-width: 150px;
+  transition: transform 0.2s ease;
+}
+
+.issue:hover {
+  transform: scale(1.05);
+}
+
+.issue.orange {
+  background-color: #f89c1c;
+}
+
+.issue.yellow {
+  background-color: #ffce3d;
+  color: black;
+}
+
+.issue.red {
+  background-color: #e74c3c;
+}
+
+.issue.green {
+  background-color: #2ecc71;
+}
+
+.issue.gray {
+  background-color: #cccccc;
+  color: black;
+}
+
+.issue.wide {
+  min-width: 200px;
+}
+
+.info {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: white;
+}
+
+.info-box {
+  flex: 1;
+  max-width: 300px;
+  text-align: left;
+}
+
+.info-box h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+</style>
 <body>
+  <header class="header">
+    <div class="logo">LokConnect</div>
+    <nav class="nav">
+      {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}!</p>
+        
+        <form action="{% url 'logout' %}" method="POST" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" style="background: none; border: none; color: rgb(98, 98, 102); cursor: pointer; text-decoration: underline;">
+            Logout
+          </button>
+        </form>
+  
+      {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'Signup' %}">Signup</a>
+      {% endif %}
+        <a href="{% url 'Homepage' %}">Home</a>
+      <a href="#">Outfont</a>
+      <a href="#">Reboronace</a>
+      <a href="#">Foot Infort Casysence</a>
+      <a href="#">Veoor Apoum Mention</a>
+    </nav>
+    <button class="report-btn">Create an issue</button>
+  </header>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <h2>Speaker Session</h2>
-        <div class="nav-buttons">
-            {% if request.session.user_email %}
-                <button onclick="window.location.href='{% url 'logout' %}'">Logout</button>
-            {% else %}
-                <button onclick="openModal('registerModal')">Sign Up</button>
-                <button onclick="openModal('loginModal')">Login</button>
-            {% endif %}
-        </div>
-    </div>
+  <main class="main">
+    <h1>Report an Issue</h1>
+    <section class="issue-grid">
+      <button class="issue gray">Roads & Holes</button>
+      <button class="issue gray">Street Lighting</button>
+      <button class="issue gray ">Street Lighting</button>
+      <button class="issue gray">Drainagement</button>
+      <button class="issue gray ">Sanitacation</button>
+      <button class="issue gray ">Natural Calamites</button>
+      <button class="issue wide">Street Lighing</button>
     
+      <button class="issue gray">Vault Gaucurity</button>
+      <button class="issue gray">Security Calamites</button>
     
-
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1>Finding the Correct Balance Between the Urge to Learn and the Urge to Earn</h1>
-        <p>Join our exclusive speaker session!</p>
-        <p><strong>Date:</strong> April 5, 2025 | <strong>Time:</strong> 5:00 PM - 7:00 PM</p>
-    </div>
-    <section class="speaker">
-        <a href="https://imgbb.com/"><img src="https://i.ibb.co/JjyTjTnr/2020052811402003.jpg" alt="2020052811402003" border="0"></a>
-        <h2>Dr. Ramesh Gupta</h2>
-        <p>Renowned Educator & Entrepreneur</p>
-        <p>With over 20 years of experience in education and business, Dr. Ramesh Gupta will share insights on how to balance learning with financial growth, ensuring success in both career and life.</p>
+      <button class="issue gray wide">Other Issues</button>
     </section>
 
-    <!-- Registration Modal -->
-    <div id="registerModal" class="modal">
-        <span class="close" onclick="closeModal('registerModal')">&times;</span>
-        <h2>Register</h2>
-        <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-          <p class="message" id="registerMessage"></p>
-    </div>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <span class="close" onclick="closeModal('loginModal')">&times;</span>
-        <h2>Login</h2>
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <input type="email" name="email" placeholder="Enter your email" required>
-            <input type="password" name="password" placeholder="Enter your password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p class="message">{% if error %}{{ error }}{% endif %}</p>
-    </div>
-    
-
-    
-    <div class="container">
-        <h2>Check-in / Check-out</h2>
-
-        {% if request.session.user_email %}
-            <p><strong>Welcome:</strong> {{ request.session.user_email }}</p>
-            
-            <form action="{% url 'check_in' request.session.user_email %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" {% if user.checked_in %}disabled{% endif %}>Check In</button>
-            </form>
-
-            <form action="{% url 'check_out' request.session.user_email %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" {% if not user.checked_in %}disabled{% endif %}>Check Out</button>
-            </form>
-
-        {% else %}
-            <p>Please log in to check-in or check-out.</p>
-        {% endif %}
-
-        {% if message %}
-            <p class="message">{{ message }}</p>
-        {% endif %}
-    </div>
-
-    <script>
-
-function openModal(id) {
-            document.getElementById(id).style.display = "block";
-        }
-        function closeModal(id) {
-            document.getElementById(id).style.display = "none";
-        }
-        
-
-   </script>
-
+    <section class="info">
+      <div class="info-box">
+        <h3>Comfort for people</h3>
+        <p>Ai generation of reports.</p>
+      </div>
+      <div class="info-box">
+        <h3>Public Safety & Sanitation</h3>
+        <p></p>
+      </div>
+      <div class="info-box">
+        <h3>Latest Issues & acting</h3>
+        <p></p>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
